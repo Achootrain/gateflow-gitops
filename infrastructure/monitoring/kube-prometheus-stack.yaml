@@ -31,6 +31,9 @@ spec:
       enabled: false
     grafana:
       enabled: true
+      # Single replica on request-tight nodes — a RollingUpdate surge pod can never schedule.
+      deploymentStrategy:
+        type: Recreate
       defaultDashboardsEnabled: false
       # Loki has no gateway in our trimmed install — point Grafana straight
       # at the single-binary service.
@@ -69,7 +72,7 @@ spec:
         retention: 2d
         resources:
           requests:
-            cpu: 200m
+            cpu: 150m
             memory: 512Mi
           limits:
             cpu: 400m
@@ -79,7 +82,7 @@ spec:
     prometheusOperator:
       resources:
         requests:
-          cpu: 100m
+          cpu: 50m
           memory: 128Mi
         limits:
           cpu: 200m

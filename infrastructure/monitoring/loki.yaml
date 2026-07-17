@@ -1,5 +1,7 @@
-# SingleBinary plus filesystem storage keeps Loki useful for short dev debugging
-# without requiring object storage. emptyDir means logs disappear after a move.
+# SingleBinary uses a 10Gi PVC backed by Azure Disk through the AKS default
+# storage class, giving Loki a writable /var/loki despite its read-only root
+# filesystem and preserving logs across restarts. The disk lives in the AKS MC_
+# resource group and is deleted with the platform layer.
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -40,7 +42,6 @@ spec:
       replicas: 1
       persistence:
         enabled: true
-        type: emptyDir 
         size: 10Gi # Recommended to protect node disk
       resources:
         requests:
