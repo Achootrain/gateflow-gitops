@@ -1,0 +1,28 @@
+# Under multiTenancy.enforce, helm-controller impersonates <namespace>/flux-applier for HelmReleases applied by the platform Kustomization, so the identity must exist in every namespace where the platform tier runs Helm releases; cluster-admin is required because kube-prometheus-stack installs CRDs and ClusterRoles.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: flux-applier
+  namespace: gateway
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: flux-applier
+  namespace: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: flux-applier-helm-cluster-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: flux-applier
+    namespace: gateway
+  - kind: ServiceAccount
+    name: flux-applier
+    namespace: monitoring
