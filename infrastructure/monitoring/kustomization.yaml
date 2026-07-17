@@ -5,3 +5,6 @@ resources:
   - kube-prometheus-stack.yaml
   - loki.yaml
   - promtail.yaml
+  - dashboards/gateway-kong.yaml
+  - dashboards/cluster-capacity.yaml
+  - dashboards/logs-loki.yaml

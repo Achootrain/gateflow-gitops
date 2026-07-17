@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-gateway-kong
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  gateway-kong.json: |
+    {
+      "annotations": {"list": []},
+      "editable": true,
+      "graphTooltip": 1,
+      "panels": [
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"unit": "reqps"}, "overrides": []},
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+          "id": 1,
+          "options": {"legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom"}, "tooltip": {"mode": "multi", "sort": "desc"}},
+          "targets": [{"datasource": "Prometheus", "expr": "sum by (service, route) (rate(kong_http_requests_total[$__rate_interval]))", "legendFormat": "{{service}} / {{route}}", "refId": "A"}],
+          "title": "Request rate by service / route",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"unit": "ms"}, "overrides": []},
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+          "id": 2,
+          "options": {"legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom"}, "tooltip": {"mode": "multi", "sort": "desc"}},
+          "targets": [
+            {"datasource": "Prometheus", "expr": "histogram_quantile(0.50, sum by (le, service, route) (rate(kong_request_latency_ms_bucket[$__rate_interval])))", "legendFormat": "p50 {{service}} / {{route}}", "refId": "A"},
+            {"datasource": "Prometheus", "expr": "histogram_quantile(0.95, sum by (le, service, route) (rate(kong_request_latency_ms_bucket[$__rate_interval])))", "legendFormat": "p95 {{service}} / {{route}}", "refId": "B"},
+            {"datasource": "Prometheus", "expr": "histogram_quantile(0.99, sum by (le, service, route) (rate(kong_request_latency_ms_bucket[$__rate_interval])))", "legendFormat": "p99 {{service}} / {{route}}", "refId": "C"}
+          ],
+          "title": "End-to-end request latency",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"unit": "reqps"}, "overrides": []},
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+          "id": 3,
+          "options": {"legend": {"calcs": ["sum"], "displayMode": "table", "placement": "bottom"}, "tooltip": {"mode": "multi", "sort": "desc"}},
+          "targets": [{"datasource": "Prometheus", "expr": "sum by (code) (rate(kong_http_requests_total[$__rate_interval]))", "legendFormat": "HTTP {{code}}", "refId": "A"}],
+          "title": "HTTP status breakdown",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"color": {"fixedColor": "red", "mode": "fixed"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 0.001}]}, "unit": "reqps"}, "overrides": []},
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+          "id": 4,
+          "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+          "targets": [{"datasource": "Prometheus", "expr": "sum(rate(kong_http_requests_total{code=\"429\"}[$__rate_interval]))", "legendFormat": "429 responses/s", "refId": "A"}],
+          "title": "Rate-limit hits (HTTP 429)",
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"mappings": [], "unit": "short"}, "overrides": []},
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16},
+          "id": 5,
+          "options": {"legend": {"calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom"}, "tooltip": {"mode": "multi", "sort": "desc"}},
+          "targets": [{"datasource": "Prometheus", "expr": "max by (upstream, target, state) (kong_upstream_target_health)", "legendFormat": "{{upstream}} / {{target}} ({{state}})", "refId": "A"}],
+          "title": "Upstream target health (1 = current state)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"unit": "Bps"}, "overrides": []},
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
+          "id": 6,
+          "options": {"legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom"}, "tooltip": {"mode": "multi", "sort": "desc"}},
+          "targets": [{"datasource": "Prometheus", "expr": "sum by (service, route, direction) (rate(kong_bandwidth_bytes[$__rate_interval]))", "legendFormat": "{{direction}} {{service}} / {{route}}", "refId": "A"}],
+          "title": "Bandwidth by service / route / direction",
+          "type": "timeseries"
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 39,
+      "tags": ["gateflow", "kong", "gateway"],
+      "templating": {"list": []},
+      "time": {"from": "now-6h", "to": "now"},
+      "timezone": "browser",
+      "title": "Gateway — Kong",
+      "uid": "gateflow-kong",
+      "version": 1
+    }

@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-logs-loki
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  logs-loki.json: |
+    {
+      "annotations": {"list": []},
+      "editable": true,
+      "graphTooltip": 1,
+      "panels": [
+        {
+          "datasource": "Loki",
+          "fieldConfig": {"defaults": {"unit": "logs/s"}, "overrides": []},
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+          "id": 1,
+          "options": {"legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom"}, "tooltip": {"mode": "multi", "sort": "desc"}},
+          "targets": [{"datasource": "Loki", "expr": "sum by (namespace) (rate({namespace=~\".+\"}[$__rate_interval]))", "legendFormat": "{{namespace}}", "queryType": "range", "refId": "A"}],
+          "title": "Log volume by namespace",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Loki",
+          "fieldConfig": {"defaults": {"unit": "logs/s"}, "overrides": []},
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+          "id": 2,
+          "options": {"legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom"}, "tooltip": {"mode": "multi", "sort": "desc"}},
+          "targets": [{"datasource": "Loki", "expr": "sum by (namespace) (rate({namespace=~\"team-chat|gateway\"} |~ \"(?i)\\\\b(error|exception|fatal|panic)\\\\b\" [$__rate_interval]))", "legendFormat": "{{namespace}}", "queryType": "range", "refId": "A"}],
+          "title": "Error-level log rate — chat-svc and gateway",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Loki",
+          "gridPos": {"h": 16, "w": 24, "x": 0, "y": 8},
+          "id": 3,
+          "options": {"dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": false, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true},
+          "targets": [{"datasource": "Loki", "expr": "{namespace=\"team-chat\"}", "queryType": "range", "refId": "A"}],
+          "title": "Team-chat live tail (30s refresh)",
+          "type": "logs"
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 39,
+      "tags": ["gateflow", "loki", "logs"],
+      "templating": {"list": []},
+      "time": {"from": "now-1h", "to": "now"},
+      "timezone": "browser",
+      "title": "Logs — Loki",
+      "uid": "gateflow-logs",
+      "version": 1
+    }

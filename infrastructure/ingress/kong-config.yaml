@@ -20,6 +20,12 @@ data:
               - /chat
             strip_path: false
     plugins:
+      - name: prometheus
+        config:
+          status_code_metrics: true
+          latency_metrics: true
+          bandwidth_metrics: true
+          upstream_health_metrics: true
       - name: rate-limiting
         config:
           policy: redis
