@@ -1,0 +1,10 @@
+# Rendered by the Azure-managed entry kustomization's postBuild.substitute;
+# downstream Kustomizations read it via substituteFrom.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-vars
+  namespace: flux-system
+data:
+  TENANT_ID: "${TENANT_ID}"
+  CHAT_SVC_CLIENT_ID: "${CHAT_SVC_CLIENT_ID}"

@@ -15,3 +15,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: gateflow-dev
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-vars

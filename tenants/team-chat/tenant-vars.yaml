@@ -1,0 +1,10 @@
+# Per-tenant copy — multiTenancy.enforce forbids the tenant's Kustomization
+# from reading flux-system.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tenant-vars
+  namespace: team-chat
+data:
+  TENANT_ID: "${TENANT_ID}"
+  CHAT_SVC_CLIENT_ID: "${CHAT_SVC_CLIENT_ID}"

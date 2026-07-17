@@ -27,3 +27,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: team-chat
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: tenant-vars

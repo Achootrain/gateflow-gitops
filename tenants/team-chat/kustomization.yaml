@@ -6,4 +6,5 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - rbac.yaml
+  - tenant-vars.yaml
   - sync.yaml
