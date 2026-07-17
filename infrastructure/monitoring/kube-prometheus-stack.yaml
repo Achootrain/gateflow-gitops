@@ -49,11 +49,11 @@ spec:
       sidecar:
         resources:
           requests:
-            cpu: 25m
-            memory: 32Mi
+            cpu: 100m
+            memory: 128Mi
           limits:
-            cpu: 50m
-            memory: 64Mi
+            cpu: 200m
+            memory: 256Mi
     alertmanager:
       alertmanagerSpec:
         replicas: 1

@@ -39,7 +39,9 @@ spec:
     singleBinary:
       replicas: 1
       persistence:
-        enabled: false
+        enabled: true
+        type: emptyDir 
+        size: 10Gi # Recommended to protect node disk
       resources:
         requests:
           cpu: 100m
