@@ -1,0 +1,17 @@
+# Tenant onboarding records (namespace + RBAC + sync per tenant). Runs after
+# infrastructure so shared services (gateway, monitoring CRDs) exist first.
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: tenants
+  namespace: flux-system
+spec:
+  interval: 2m
+  dependsOn:
+    - name: infrastructure
+  path: ./tenants
+  prune: true
+  serviceAccountName: flux-applier
+  sourceRef:
+    kind: GitRepository
+    name: gateflow-dev

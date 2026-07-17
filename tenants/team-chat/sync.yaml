@@ -1,0 +1,29 @@
+# The tenant's own reconciliation loop. Points at the same public repo for
+# now (path tenants/team-chat/workloads); a real org would point this at the
+# tenant team's separate repository — swapping the URL is the only change.
+# Source and Kustomization sit in the tenant namespace: multiTenancy.enforce
+# forbids referencing sources anywhere else.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: team-chat
+  namespace: team-chat
+spec:
+  interval: 2m
+  url: https://github.com/Achootrain/gateflow-gitops
+  ref:
+    branch: main
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: team-chat-workloads
+  namespace: team-chat
+spec:
+  interval: 2m
+  path: ./tenants/team-chat/workloads
+  prune: true
+  serviceAccountName: flux-tenant # impersonation — the multi-tenancy keystone
+  sourceRef:
+    kind: GitRepository
+    name: team-chat

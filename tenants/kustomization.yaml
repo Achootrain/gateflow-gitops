@@ -1,0 +1,6 @@
+# One directory per tenant. Adding a tenant = adding a line here via
+# platform-team PR; that PR IS the onboarding.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - team-chat

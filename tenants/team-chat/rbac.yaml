@@ -1,0 +1,34 @@
+# The tenant's reconciler identity. Flux applies the tenant's manifests AS
+# this ServiceAccount (impersonation), so the wildcard Role below is the
+# tenant's permission ceiling: everything inside team-chat, nothing outside.
+# Committing a ClusterRole/ClusterRoleBinding to the tenant repo fails with
+# `forbidden` — the identity applying it simply lacks cluster scope.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: flux-tenant
+  namespace: team-chat
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tenant-admin
+  namespace: team-chat
+rules:
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: flux-tenant-admin
+  namespace: team-chat
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: tenant-admin
+subjects:
+  - kind: ServiceAccount
+    name: flux-tenant
+    namespace: team-chat

@@ -1,0 +1,6 @@
+# Tenant-owned subtree: applied as flux-tenant, confined to namespace
+# team-chat. In a multi-repo org this directory would be the tenant's repo.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - chat-svc

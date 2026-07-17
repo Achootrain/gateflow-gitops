@@ -1,0 +1,9 @@
+# Platform-owned onboarding record for tenant team-chat. Note what is NOT
+# here: workloads/ — that subtree is reconciled by the tenant's own sync
+# (sync.yaml) under the impersonated flux-tenant ServiceAccount.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - rbac.yaml
+  - sync.yaml

@@ -1,0 +1,29 @@
+# key-auth is enabled with NO consumers: every request gets 401 until a real
+# consumer is provisioned (day-2 exercise — SOPS-encrypted credential or a
+# secret-backed consumer). A "placeholder" key in a public repo would be a
+# fully working credential; deny-by-default is the only safe git-able state.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kong-dbless-config
+  namespace: gateway
+data:
+  kong.yml: |
+    _format_version: "3.0"
+    _transform: true
+    services:
+      - name: chat-svc
+        url: http://chat-svc.team-chat.svc.cluster.local:8000
+        routes:
+          - name: chat
+            paths:
+              - /chat
+            strip_path: false
+    plugins:
+      - name: rate-limiting
+        config:
+          policy: redis
+          minute: 10
+          redis_host: redis.gateway.svc.cluster.local
+          redis_port: 6379
+      - name: key-auth

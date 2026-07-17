@@ -1,0 +1,10 @@
+# Same-namespace as the consuming HelmRelease: multiTenancy.enforce blocks
+# cross-namespace sourceRefs.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: kong
+  namespace: gateway
+spec:
+  interval: 1h
+  url: https://charts.konghq.com

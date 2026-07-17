@@ -1,0 +1,19 @@
+# Same-namespace as the consuming HelmReleases: multiTenancy.enforce blocks
+# cross-namespace sourceRefs.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: prometheus-community
+  namespace: monitoring
+spec:
+  interval: 1h
+  url: https://prometheus-community.github.io/helm-charts
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  interval: 1h
+  url: https://grafana.github.io/helm-charts

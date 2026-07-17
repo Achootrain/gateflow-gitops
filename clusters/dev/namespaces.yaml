@@ -1,5 +1,5 @@
-# First proof of reconciliation: if these namespaces appear on the cluster,
-# git -> Flux -> cluster works end to end.
+# Platform-owned namespaces only. Tenant namespaces are created by the
+# tenants/ tree — a tenant's namespace is part of its onboarding record.
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -8,4 +8,4 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: apps
+  name: monitoring

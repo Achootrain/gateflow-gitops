@@ -1,6 +1,10 @@
-# Entry point for the dev cluster — the Flux Kustomization created by the
-# platform layer reconciles exactly this directory (path: clusters/dev).
+# Dev cluster entry point — the ONLY path the Azure fluxConfiguration
+# reconciles (with platform privileges). Everything else is composed from
+# here via Flux Kustomization CRs, so cluster topology lives in git.
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - namespaces.yaml
+  - flux-applier.yaml
+  - infrastructure.yaml
+  - tenants.yaml

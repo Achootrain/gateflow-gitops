@@ -1,0 +1,8 @@
+# Cluster-wide security policy tier — intentionally empty for now.
+# Day-2 backlog fills this: default-deny NetworkPolicies, Kyverno/Gatekeeper
+# admission policies (e.g. require resource limits, block :latest tags).
+# Tenant-namespace policies live in tenants/<team>/ so they apply after the
+# namespace exists.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources: []
