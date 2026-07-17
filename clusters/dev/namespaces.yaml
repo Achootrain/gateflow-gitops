@@ -1,0 +1,11 @@
+# First proof of reconciliation: if these namespaces appear on the cluster,
+# git -> Flux -> cluster works end to end.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gateway
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: apps

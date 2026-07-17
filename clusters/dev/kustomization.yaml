@@ -1,0 +1,6 @@
+# Entry point for the dev cluster — the Flux Kustomization created by the
+# platform layer reconciles exactly this directory (path: clusters/dev).
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespaces.yaml
