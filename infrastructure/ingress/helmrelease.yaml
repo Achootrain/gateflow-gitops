@@ -33,6 +33,9 @@ spec:
       configMap: kong-dbless-config
     proxy:
       type: LoadBalancer
+      # Internal LB only — the public frontend was removed after internet bot scanning; external clients are simulated from snet-vm.
+      annotations:
+        service.beta.kubernetes.io/azure-load-balancer-internal: "true"
     nodeSelector:
       kubernetes.io/arch: arm64
       kubernetes.io/os: linux
