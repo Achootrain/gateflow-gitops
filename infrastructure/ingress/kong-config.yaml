@@ -30,6 +30,7 @@ data:
         config:
           policy: redis
           minute: 10
+          redis:
             host: redis.gateway.svc.cluster.local
             port: 6379
       - name: key-auth
