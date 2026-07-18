@@ -24,6 +24,11 @@ spec:
       # used (it mounts the ConfigMap and points Kong at it) — overriding the
       # path here would break startup.
       nginx_worker_processes: "1"
+    # KIC defaults to enabled and, when on, the chart ignores dblessConfig
+    # entirely (routes would come from Ingress CRs instead) — Kong then runs
+    # with zero routes and 404s everything. ADR-0003 is static file config.
+    ingressController:
+      enabled: false
     dblessConfig:
       configMap: kong-dbless-config
     proxy:
