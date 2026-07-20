@@ -8,3 +8,4 @@ resources:
   - dashboards/gateway-kong.yaml
   - dashboards/cluster-capacity.yaml
   - dashboards/logs-loki.yaml
+  - dashboards/batch-settlement.yaml

@@ -1,0 +1,18 @@
+# kube-prometheus-stack only selects ServiceMonitors carrying its release
+# label (documented platform lesson — without it the target silently never
+# appears in Prometheus).
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: batch-status
+  namespace: team-chat
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: batch-status
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s

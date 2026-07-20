@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-batch-settlement
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  batch-settlement.json: |
+    {
+      "annotations": {"list": []},
+      "editable": true,
+      "graphTooltip": 1,
+      "panels": [
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"min": 0, "unit": "short", "color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 2}]}}, "overrides": []},
+          "gridPos": {"h": 8, "w": 6, "x": 0, "y": 0},
+          "id": 1,
+          "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "graphMode": "area"},
+          "targets": [
+            {"datasource": "Prometheus", "expr": "max(batch_active_runs)", "legendFormat": "active runs", "refId": "A"}
+          ],
+          "title": "Active settlement runs",
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"min": 0, "unit": "short", "color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 1}]}}, "overrides": []},
+          "gridPos": {"h": 8, "w": 6, "x": 6, "y": 0},
+          "id": 2,
+          "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "graphMode": "area"},
+          "targets": [
+            {"datasource": "Prometheus", "expr": "max(batch_duplicate_receipts)", "legendFormat": "duplicate receipts", "refId": "A"}
+          ],
+          "title": "Duplicate receipts (business SLI)",
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"min": 0, "unit": "short"}, "overrides": []},
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+          "id": 3,
+          "options": {"legend": {"calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom"}, "tooltip": {"mode": "multi", "sort": "desc"}},
+          "targets": [
+            {"datasource": "Prometheus", "expr": "increase(batch_archive_receipts_total[10m])", "legendFormat": "receipts archived (10m)", "refId": "A"},
+            {"datasource": "Prometheus", "expr": "increase(batch_unique_records_settled_total[10m])", "legendFormat": "unique records settled (10m)", "refId": "B"}
+          ],
+          "title": "Receipts vs unique settlements",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"min": 0, "unit": "s"}, "overrides": []},
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+          "id": 4,
+          "options": {"legend": {"calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom"}, "tooltip": {"mode": "multi", "sort": "desc"}},
+          "targets": [
+            {"datasource": "Prometheus", "expr": "max(batch_last_run_duration_seconds)", "legendFormat": "last run duration", "refId": "A"},
+            {"datasource": "Prometheus", "expr": "vector(300)", "legendFormat": "schedule interval", "refId": "B"}
+          ],
+          "title": "Run duration vs schedule interval",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"min": 0, "unit": "short"}, "overrides": []},
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+          "id": 5,
+          "options": {"legend": {"calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom"}, "tooltip": {"mode": "multi", "sort": "desc"}},
+          "targets": [
+            {"datasource": "Prometheus", "expr": "sum by (job_name) (kube_job_status_active{namespace=\"team-chat\"})", "legendFormat": "active {{job_name}}", "refId": "A"},
+            {"datasource": "Prometheus", "expr": "sum by (job_name) (kube_job_status_succeeded{namespace=\"team-chat\"})", "legendFormat": "succeeded {{job_name}}", "refId": "B"}
+          ],
+          "title": "Settlement Jobs (kube-state-metrics)",
+          "type": "timeseries"
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 39,
+      "tags": ["gateflow", "batch"],
+      "time": {"from": "now-1h", "to": "now"},
+      "title": "Batch — Usage Settlement",
+      "uid": "batch-settlement"
+    }
