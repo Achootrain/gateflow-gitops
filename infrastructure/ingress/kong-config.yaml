@@ -19,6 +19,13 @@ data:
             paths:
               - /chat
             strip_path: false
+      - name: chat-svc-assist
+        url: http://chat-svc.team-chat.svc.cluster.local:8000/chat
+        routes:
+          - name: assist
+            paths:
+              - /assist
+            strip_path: true
     plugins:
       - name: prometheus
         config:
