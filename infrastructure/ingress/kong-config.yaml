@@ -25,7 +25,7 @@ data:
           - name: assist
             paths:
               - /assist
-            strip_path: true
+            strip_path: false
     plugins:
       - name: prometheus
         config:
