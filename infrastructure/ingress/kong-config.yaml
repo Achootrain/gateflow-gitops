@@ -19,6 +19,10 @@ data:
             paths:
               - /chat
             strip_path: false
+          - name: assist
+            paths:
+              - /assist
+            strip_path: false
     plugins:
       - name: prometheus
         config:
