@@ -18,14 +18,14 @@ data:
         }
         location /partners/retired {
           add_header X-GateFlow-Service finance-api always;
-          add_header X-Policy-Revision baseline always;
-          return 200 "retired partner still accepted\n";
+          add_header X-Policy-Revision deny-flux-20260728T091205Z always;
+          return 403 "retired partner denied\n";
         }
         location /policy {
           default_type application/json;
           add_header X-GateFlow-Service finance-api always;
-          add_header X-Policy-Revision baseline always;
-          return 200 '{"policy_revision":"baseline","retired_partner":"accepted"}\n';
+          add_header X-Policy-Revision deny-flux-20260728T091205Z always;
+          return 200 '{"policy_revision":"deny-flux-20260728T091205Z","retired_partner":"denied"}\n';
         }
         location /healthz { return 200 "ok\n"; }
       }
@@ -54,7 +54,7 @@ spec:
         app.kubernetes.io/name: finance-api
         app.kubernetes.io/part-of: finance-platform
       annotations:
-        gateflow.io/policy-revision: baseline
+        gateflow.io/policy-revision: deny-flux-20260728T091205Z
     spec:
       serviceAccountName: finance-api
       securityContext:
