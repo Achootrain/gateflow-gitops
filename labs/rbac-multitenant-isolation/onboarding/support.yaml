@@ -1,0 +1,162 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: flux-tenant
+  namespace: lab-rbac-support
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tenant-deployer
+  namespace: lab-rbac-support
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["apps"]
+    resources: ["replicasets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["configmaps", "services", "serviceaccounts"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["networkpolicies"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["cilium.io"]
+    resources: ["ciliumnetworkpolicies"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: flux-tenant-deployer
+  namespace: lab-rbac-support
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: tenant-deployer
+subjects:
+  - kind: ServiceAccount
+    name: flux-tenant
+    namespace: lab-rbac-support
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: tenant-budget
+  namespace: lab-rbac-support
+spec:
+  hard:
+    pods: "13"
+    requests.cpu: 80m
+    requests.memory: 256Mi
+    limits.cpu: 450m
+    limits.memory: 576Mi
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: tenant-defaults
+  namespace: lab-rbac-support
+spec:
+  limits:
+    - type: Container
+      defaultRequest:
+        cpu: 10m
+        memory: 32Mi
+      default:
+        cpu: 100m
+        memory: 128Mi
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: support-workloads
+  namespace: lab-rbac-support
+spec:
+  interval: 30s
+  path: ./labs/rbac-multitenant-isolation/tenants/support
+  prune: true
+  wait: true
+  timeout: 2m
+  serviceAccountName: flux-tenant
+  sourceRef:
+    kind: GitRepository
+    name: tenant-source
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: support-case-intake
+  namespace: lab-rbac-support
+spec:
+  interval: 30s
+  path: ./labs/rbac-multitenant-isolation/tenants/support-release/case-intake
+  prune: true
+  wait: true
+  timeout: 5m
+  serviceAccountName: flux-tenant
+  sourceRef: {kind: GitRepository, name: tenant-source}
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: support-eligibility-cache
+  namespace: lab-rbac-support
+spec:
+  interval: 30s
+  path: ./labs/rbac-multitenant-isolation/tenants/support-release/eligibility-cache
+  prune: true
+  wait: true
+  timeout: 5m
+  serviceAccountName: flux-tenant
+  sourceRef: {kind: GitRepository, name: tenant-source}
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: support-evidence-index
+  namespace: lab-rbac-support
+spec:
+  interval: 30s
+  path: ./labs/rbac-multitenant-isolation/tenants/support-release/evidence-index
+  prune: true
+  wait: true
+  timeout: 5m
+  serviceAccountName: flux-tenant
+  sourceRef: {kind: GitRepository, name: tenant-source}
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: support-search
+  namespace: lab-rbac-support
+spec:
+  interval: 30s
+  path: ./labs/rbac-multitenant-isolation/tenants/support-release/support-search
+  prune: true
+  wait: true
+  timeout: 5m
+  serviceAccountName: flux-tenant
+  sourceRef: {kind: GitRepository, name: tenant-source}
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: support-response-template
+  namespace: lab-rbac-support
+spec:
+  interval: 30s
+  path: ./labs/rbac-multitenant-isolation/tenants/support-release/response-template
+  prune: true
+  wait: true
+  timeout: 5m
+  serviceAccountName: flux-tenant
+  sourceRef: {kind: GitRepository, name: tenant-source}
