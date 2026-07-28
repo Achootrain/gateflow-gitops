@@ -16,4 +16,4 @@ patches:
       - op: add
         path: /spec/template/metadata/annotations
         value:
-          gateflow.io/release: baseline
+          gateflow.io/release: flux-20260728T091205Z
