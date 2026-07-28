@@ -1,0 +1,21 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: tenant-source
+  namespace: lab-rbac-finance
+spec:
+  interval: 30s
+  url: https://github.com/Achootrain/gateflow-gitops
+  ref:
+    branch: lab/rbac-multitenant-isolation-finance
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: tenant-source
+  namespace: lab-rbac-support
+spec:
+  interval: 30s
+  url: https://github.com/Achootrain/gateflow-gitops
+  ref:
+    branch: lab/rbac-multitenant-isolation-support

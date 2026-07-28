@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources: [../_base]
+namePrefix: case-intake-
+labels:
+  - pairs:
+      app.kubernetes.io/name: case-intake
+      gateflow.io/support-role: case-intake
+    includeSelectors: true
+    includeTemplates: true
+patches:
+  - target:
+      kind: Deployment
+      name: worker
+    patch: |
+      - op: add
+        path: /spec/template/metadata/annotations
+        value:
+          gateflow.io/release: baseline

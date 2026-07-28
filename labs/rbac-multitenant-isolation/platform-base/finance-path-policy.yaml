@@ -1,0 +1,40 @@
+# Platform-owned exception for the approved Finance integration. Authorization
+# uses the runtime namespace and ServiceAccount identity; descriptive product
+# labels remain inventory metadata only. Tenant teams cannot edit this object.
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: lab-rbac-finance-ingress
+spec:
+  endpointSelector:
+    matchLabels:
+      k8s:io.kubernetes.pod.namespace: lab-rbac-finance
+      app.kubernetes.io/name: finance-api
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: lab-rbac-finance
+            io.cilium.k8s.policy.serviceaccount: finance-reconciler
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: lab-rbac-finance-egress
+spec:
+  endpointSelector:
+    matchLabels:
+      k8s:io.kubernetes.pod.namespace: lab-rbac-finance
+      io.cilium.k8s.policy.serviceaccount: finance-reconciler
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: lab-rbac-finance
+            app.kubernetes.io/name: finance-api
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP

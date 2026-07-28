@@ -1,0 +1,50 @@
+# Replace every TODO and split this pattern per tenant. Do not add this example
+# itself to kustomization.yaml.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: flux-tenant
+  namespace: TODO_NAMESPACE
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tenant-deployer
+  namespace: TODO_NAMESPACE
+rules:
+  # TODO: list only the API groups, resources, and verbs the workload tree needs.
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: flux-tenant-deployer
+  namespace: TODO_NAMESPACE
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: tenant-deployer
+subjects:
+  - kind: ServiceAccount
+    name: flux-tenant
+    namespace: TODO_NAMESPACE
+---
+# TODO: ResourceQuota
+---
+# TODO: LimitRange
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: TODO_TENANT-workloads
+  namespace: TODO_NAMESPACE
+spec:
+  interval: 30s
+  path: ./labs/rbac-multitenant-isolation/tenants/TODO_TENANT
+  prune: true
+  wait: true
+  timeout: 2m
+  serviceAccountName: flux-tenant
+  sourceRef:
+    kind: GitRepository
+    name: tenant-source
